@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="user-form">
+      <label for="input-username">Username:</label><br />
+      <input type="text" id="input-username" name="input-username" /><br />
+      <label for="input-email">Email:</label><br />
+      <input type="text" id="input-email" name="input-email" /><br />
+      <label for="input-address">Address:</label><br />
+      <input type="text" id="input-address" name="input-address" /><br />
+      <input type="checkbox" id="input-admin" name="input-admin" />
+      <label for="input-admin">Admin</label><br />
+      <button type="button" id="submit-data">Submit</button>
+      <input type="file" id="input-image" name="input-image" /><br />
+    </form>
+    <table id="user-table">
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Admin</th>
+        <th>Image</th>
+      </tr>
+      <!-- Existing data goes here -->
+    </table>
+    <button type="button" id="empty-table">Empty Table</button>
+    <script>
+      document
+        .getElementById("submit-data")
+        .addEventListener("click", function () {
+          var username = document.getElementById("input-username").value;
+          var email = document.getElementById("input-email").value;
+          var address = document.getElementById("input-address").value;
+          var admin = document.getElementById("input-admin").checked
+            ? "X"
+            : "-";
+          var table = document.getElementById("user-table");
+          var rows = table.rows;
+          var image = document.getElementById("input-image").files[0];
+          var reader = new FileReader();
+          var usernameExists = false;
+          reader.onloadend = function () {
+            var imgData = reader.result;
+
+            var usernameExists = false;
+            for (var i = 1; i < rows.length; i++) {
+              var rowUsername = rows[i].cells[0].innerHTML;
+              if (rowUsername === username) {
+                rows[i].cells[1].innerHTML = email;
+                rows[i].cells[2].innerHTML = address;
+                rows[i].cells[3].innerHTML = admin;
+                rows[i].cells[4].innerHTML =
+                  '<img src="' + imgData + '" width="64" height="64" />';
+                usernameExists = true;
+                break;
+              }
+            }
+            if (!usernameExists) {
+              var row = table.insertRow(-1);
+              var cell1 = row.insertCell(0);
+              var cell2 = row.insertCell(1);
+              var cell3 = row.insertCell(2);
+              var cell4 = row.insertCell(3);
+              var cell5 = row.insertCell(4);
+
+              cell1.innerHTML = username;
+              cell2.innerHTML = email;
+              cell3.innerHTML = address;
+              cell4.innerHTML = admin;
+              cell5.innerHTML =
+                '<img src="' + imgData + '" width="64" height="64" />';
+            }
+            document.getElementById("user-form").reset();
+          };
+          if (image) {
+            reader.readAsDataURL(image);
+          }
+        });
+
+      document
+        .getElementById("empty-table")
+        .addEventListener("click", function () {
+          var table = document.getElementById("user-table");
+          var rows = table.rows.length;
+          for (var i = rows - 1; i > 0; i--) {
+            table.deleteRow(i);
+          }
+        });
+    </script>
+  </body>
+</html>
